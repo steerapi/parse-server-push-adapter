@@ -57,6 +57,20 @@ GCM.prototype.send = function(data, devices) {
   if (data['expiration_time']) {
     expirationTime = data['expiration_time'];
   }
+
+  if(data.data && data.data.notification){
+    data.notification = data.data.notification
+  }
+  if(!data.notification){
+    data.notification = {}
+  }
+  if(data.data && data.data.alert) {
+    data.notification.title = data.data.alert
+  }
+  if(data.data && data.data.badge) {
+    data.notification.badge = data.data.badge
+  }
+  
   // Generate gcm payload
   // PushId is not a formal field of GCM, but Parse Android SDK uses this field to deduplicate push notifications
   let gcmPayload = generateGCMPayload(data, pushId, timestamp, expirationTime);
@@ -97,7 +111,7 @@ GCM.prototype.send = function(data, devices) {
       let promise = promises[index];
       let result = results ? results[index] : undefined;
       let device = devicesMap[token];
-      device.deviceType = 'android';
+      // device.deviceType = 'android';
       let resolution = {
         device,
         multicast_id,
